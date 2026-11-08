@@ -1,3 +1,5 @@
+import math
+
 # initial/general functions
 densitySugar = 1599
 densityEthanol = 789
@@ -16,9 +18,7 @@ def initMassFlow(volume):
     return mfWater, mfFiber, mfSugar
 
 def fluidDensity(massFlows):
-    massTotal = 0
-    for i in massFlows: 
-        massTotal += i
+    massTotal = totalMassFlowRate(massFlows)
     percWater = massFlows[0] / massTotal
     percFiber = massFlows[1] / massTotal
     percSugar = massFlows[2] / massTotal
@@ -26,6 +26,25 @@ def fluidDensity(massFlows):
     fluidDensity = percWater * densityWater + percFiber * densityFiber + \
                    percSugar * densitySugar + percEthanol * densityEthanol
     return fluidDensity
+
+def totalMassFlowRate(massFlows):
+    massTotal = 0
+    for i in massFlows: 
+        massTotal += i
+    return massTotal
+
+def volumetricFlowRate(massFlows, dischargeCoeff, pipeRadius, pressureDrop, numLeaks):
+    totFluDensity = fluidDensity(massFlows)
+    massTotal = totalMassFlowRate(massFlows)
+    pipeLeakage = dischargeCoeff * (math.pi * math.pow(pipeRadius, 2)) * \
+                  math.sqrt(2 * (pressureDrop / totFluDensity))
+    volFlowRate = (massTotal / totFluDensity) - (numLeaks * pipeLeakage)
+    return volFlowRate
+
+def percEthanol(massFlows):
+    massTotal = totalMassFlowRate(massFlows)
+    ethanolProd = massFlows[3] / massTotal
+    return ethanolProd
 
 # fermenter functions
 
