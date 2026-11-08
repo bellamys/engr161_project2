@@ -56,7 +56,6 @@ def fermMassFlow(fermEff, mfInputs):
     mfCO2 = .49 * mfInputs[2] * fermEff
     return mfWater, mfFiber, mfSugar, mfEthanol, mfCO2
 
-
 # filter functions
 
 def filtMassFlow(filtEff, mfInputs):
