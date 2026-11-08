@@ -1,15 +1,19 @@
 GRAVITY = 9.81
 
+# nums from outside/based on factory: pipe length, bend angles, needed height
+
 import math
 
 # note: pump loss = 1 - pump_efficiency
 
-def calc_head_loss(friction_factor, pipe_length, pipe_diameter, flow_rate):
-    fluid_velocity = flow_rate / ((math.pi * pipe_diameter ** 2) / 4)
-    return friction_factor * (pipe_length / pipe_diameter) * (fluid_velocity ** 2) / (2 * GRAVITY)
-
-def calc_pipe_friction(fluid_mass, head_loss):
-    return fluid_mass * GRAVITY * head_loss
-
 def calc_pump_energy(fluid_mass, height, exit_velocity, pipe_friction):
-    energy = (fluid_mass * GRAVITY * height) + (0.5 * fluid_mass * exit_velocity ** 2) + pipe_friction
+    return (fluid_mass * GRAVITY * height) + (0.5 * fluid_mass * exit_velocity ** 2) + pipe_friction
+
+def calc_head_loss(fric, flow_rate, pipe_length, pipe_id):
+    return (fric * (8 / math.pi ** 2) * ((flow_rate ** 3 * pipe_length) / pipe_id ** 5))
+
+def calc_pipe_friction_loss(density, d_t, fric, flow_rate, pipe_length, pipe_id):
+    return density * d_t * calc_head_loss(fric, flow_rate, pipe_length, pipe_id)
+
+def calc_bend_loss(density, flow_rate, d_t, bend_fac, pipe_id):
+    return (density * flow_rate * d_t) * (bend_fac * (flow_rate / (math.pi * (pipe_id / 2) ** 2) ** 2 / 2))

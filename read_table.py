@@ -2,7 +2,7 @@ import csv
 
 # pass all numbers as strings
 
-def getValues(type, quality, parameter):
+def get_values(type, quality, parameter):
     # ducts hard-coded, as are only type with different format
     if type == "duct":
         if parameter == 1: # parameter for duct is inner diameter
@@ -20,4 +20,4 @@ def getValues(type, quality, parameter):
     column = vals[0].index(quality)
     row = [rws[-1] for rws in vals].index(parameter)
 
-    return [vals[1][column], vals[row][column]]
+    return [float(vals[1][column]), float(vals[row][column])]
