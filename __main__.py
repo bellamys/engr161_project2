@@ -1,12 +1,15 @@
 from read_table import get_values
 import energy
+import mass_calcs
+
+TIME = 24*3600
+DISCHARGE_COEFF = 1
 
 user_in = -1
 pipes = []
 bends = []
 pump_effs = []
 
-density = float(input("Fluid density? "))
 flow_rate = float(input("Flow rate? "))
 
 # 7 pipe bends, 2 75 deg, 5 90 deg
@@ -17,33 +20,60 @@ while user_in != 0:
         print("Inputting pipe")
         pipe_type = input("Pipe type? ")
         pipe_id = input("Inner diameter? (0.10-0.15) ")
-        pipe = [get_values("pipe", pipe_type, pipe_id), pipe_id, float(input("pipe length? ")), 5] # last val is time
+        pipe = [get_values("pipe", pipe_type, pipe_id), pipe_id, float(input("pipe length? ")), TIME] # last val is time
         pipes.append(pipe)
         # print(energy.calc_pipe_friction_loss(1000, float(input("time? ")), float(pipe[0]), 1, float(input("pipe length? ")), float(pipe_id)))
     elif user_in == "2":
         print("Inputting bend")
         bend_ang = input("Bend angle? ")
         bend_id = input("Inner diameter? (0.10-0.15) ")
-        bends.append([get_values("bend", bend_ang, bend_id), bend_id, float(input("time? "))])
+        bends.append([get_values("bend", bend_ang, bend_id), bend_id, TIME])
     elif user_in == "3":
         print("Inputting pump")
         pump_effs.append(float(input("Pump efficiency? ")))
     elif user_in == "0":
         break
 
+# set up densities
+# fluid_d = [mass_calcs.initFluidDensity]
+mass_flows = [mass_calcs.initMassFlow(float(input("Volume? ")))]
+mass_flows.append(mass_calcs.fermMassFlow(float(input("Fermenter efficiency? ")), mass_flows[-1]))
+mass_flows.append(mass_calcs.filtMassFlow(float(input("Filter efficiency? ")), mass_flows[-1]))
+mass_flows.append(mass_calcs.distMassFlow(float(input("Distiller efficiency? ")), mass_flows[-1]))
+mass_flows.append(mass_calcs.dehyMassFlow(float(input("Dehydrator efficiency? ")), mass_flows[-1]))
+fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
+# ferm, filter, dist, deh
+
+process_pipes = [int(input("Number of pipes before fermenter? "))]
+process_pipes.append(int(input("Number of pipes before filter? ")))
+process_pipes.append(int(input("Number of pipes before distiller? ")))
+process_pipes.append(int(input("Number of pipes before dehydrator? ")))
+process_pipes.append(int(input("Number of pipes after dehydrator? ")))
+
+process_bends = [int(input("Number of bends before fermenter? "))]
+process_bends.append(int(input("Number of bends before filter? ")))
+process_bends.append(int(input("Number of bends before distiller? ")))
+process_bends.append(int(input("Number of bends before dehydrator? ")))
+process_bends.append(int(input("Number of bends after dehydrator? "))) 
+
 # sum energy and cost
 energy_loss = 0
 cost = 0
 i = 0
+process_point = 0
+
 while i < len(pipes):
-    energy_loss += energy.calc_pipe_friction_loss(density, float(pipes[i][3]), float(pipes[i][0][0]), flow_rate, float(pipes[i][2]), float(pipes[i][1]))
+    energy_loss += energy.calc_pipe_friction_loss(fluid_d[process_point], float(pipes[i][3]), float(pipes[i][0][0]), flow_rate, float(pipes[i][2]), float(pipes[i][1]))
     cost += pipes[i][0][1] * pipes[i][2] # cost per m * pipe m
+    if i == sum(process_pipes[:process_point]): process_point += 1
     i += 1
 
 i = 0
+process_point = 0
 while i < len(bends):
-    energy_loss += energy.calc_bend_loss(density, flow_rate, float(bends[i][2]), float(bends[i][0][0]), float(bends[i][1]))
+    energy_loss += energy.calc_bend_loss(fluid_d[process_point], flow_rate, float(bends[i][2]), float(bends[i][0][0]), float(bends[i][1]))
     cost += bends[i][0][1]
+    if i == sum(process_bends[:process_point]): process_point += 1
     i += 1
 
 # while i < len(pump_effs):

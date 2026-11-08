@@ -15,7 +15,8 @@ def initMassFlow(volume):
     mfSugar = .2 * massFlow
     mfFiber = .2 * massFlow
     mfWater = .6 * massFlow
-    return mfWater, mfFiber, mfSugar
+    mfEthanol = 0 * massFlow
+    return [mfWater, mfFiber, mfSugar, mfEthanol]
 
 def fluidDensity(massFlows):
     massTotal = totalMassFlowRate(massFlows)
@@ -54,7 +55,7 @@ def fermMassFlow(fermEff, mfInputs):
     mfSugar = (1 - fermEff) * mfInputs[2]
     mfEthanol = .51 * mfInputs[2] * fermEff
     mfCO2 = .49 * mfInputs[2] * fermEff
-    return mfWater, mfFiber, mfSugar, mfEthanol, mfCO2
+    return [mfWater, mfFiber, mfSugar, mfEthanol, mfCO2]
 
 # filter functions
 
@@ -64,7 +65,7 @@ def filtMassFlow(filtEff, mfInputs):
     mfSugar = mfInputs[2]
     mfEthanol = mfInputs[3]
     fiberWaste = mfInputs[1] * filtEff
-    return mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste
+    return [mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste]
 
 # distiller functions
 
@@ -77,7 +78,7 @@ def distMassFlow(distEff, mfInputs):
     fiberWaste = mfInputs[1] - mfFiber
     sugarWaste = mfInputs[2] - mfSugar
     waterWaste = mfInputs[0] - mfWater
-    return mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste, sugarWaste, waterWaste
+    return [mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste, sugarWaste, waterWaste]
 
 # dehydrator functions
 
@@ -87,4 +88,4 @@ def dehyMassFlow(dehyEff, mfInputs):
     mfSugar = mfInputs[2]
     mfEthanol = mfInputs[3]
     waterWaste = mfInputs[0] * dehyEff
-    return mfWater, mfFiber, mfSugar, mfEthanol, waterWaste
+    return [mfWater, mfFiber, mfSugar, mfEthanol, waterWaste]
