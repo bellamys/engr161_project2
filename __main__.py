@@ -3,7 +3,7 @@ import energy
 import mass_calcs
 
 TIME = 24*3600
-DISCHARGE_COEFF = 1
+DISCHARGE_COEFF = 0.65
 
 user_in = -1
 pipes = []
