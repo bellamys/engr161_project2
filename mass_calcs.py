@@ -34,18 +34,26 @@ def totalMassFlowRate(massFlows):
         massTotal += i
     return massTotal
 
-def volumetricFlowRate(massFlows, dischargeCoeff, pipeRadius, pressureDrop, numLeaks):
+def volumetricFlowRate(massFlows): #, dischargeCoeff, pipeRadius, pressureDrop, numLeaks):
     totFluDensity = fluidDensity(massFlows)
     massTotal = totalMassFlowRate(massFlows)
+    '''
     pipeLeakage = dischargeCoeff * (math.pi * math.pow(pipeRadius, 2)) * \
                   math.sqrt(2 * (pressureDrop / totFluDensity))
-    volFlowRate = (massTotal / totFluDensity) - (numLeaks * pipeLeakage)
+    '''
+    volFlowRate = (massTotal / totFluDensity) # - (numLeaks * pipeLeakage)
     return volFlowRate
 
 def percEthanol(massFlows):
     massTotal = totalMassFlowRate(massFlows)
     ethanolProd = massFlows[3] / massTotal
     return ethanolProd
+
+def flowVelocity(massFlows, pipeRadius):
+    volFlowRate = volumetricFlowRate(massFlows)
+    pipeArea = math.pi * math.pow(pipeRadius, 2)
+    flowVel = volFlowRate / pipeArea
+    return flowVel
 
 # fermenter functions
 
