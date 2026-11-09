@@ -30,8 +30,10 @@ def fluidDensity(massFlows):
 
 def totalMassFlowRate(massFlows):
     massTotal = 0
-    for i in massFlows: 
-        massTotal += i
+    i = 0
+    while (i < 4):
+        massTotal += massFlows[i]
+        i += 1
     return massTotal
 
 def volumetricFlowRate(massFlows): #, dischargeCoeff, pipeRadius, pressureDrop, numLeaks):
