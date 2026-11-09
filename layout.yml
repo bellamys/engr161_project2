@@ -1,0 +1,30 @@
+---
+# pipe format: quality, id, length
+# bend format: angle, id
+init:
+  pipes:
+    - ['Glorious', '0.10', 5]
+    - ['Better', '0.12', 10]
+  bends:
+  pumps:
+  valves:
+after_fermenter:
+  pipes:
+  bends:
+  pumps:
+  valves:
+after_dehydrator:
+  pipes:
+  bends:
+  pumps:
+  valves:
+after_filter:
+  pipes:
+  bends:
+  pumps:
+  valves:
+after_distiller:
+  pipes:
+  bends:
+  pumps:
+  valves:

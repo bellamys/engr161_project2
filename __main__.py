@@ -1,6 +1,7 @@
 from read_table import get_values
 import energy
 import mass_calcs
+import yaml
 
 TIME = 24*3600
 DISCHARGE_COEFF = 1
@@ -10,10 +11,61 @@ pipes = []
 bends = []
 pump_effs = []
 
-flow_rate = float(input("Flow rate? "))
-
 # 7 pipe bends, 2 75 deg, 5 90 deg
 
+# parse yaml data
+with open('layout.yml', 'r') as fid:
+    layout_data = yaml.load(fid, Loader=yaml.SafeLoader)
+
+with open('part_config.yml', 'r') as fid:
+    part_data = yaml.load(fid, Loader=yaml.SafeLoader)
+
+mass_flows = [mass_calcs.initMassFlow(part_data['volume'])]
+mass_flows.append(mass_calcs.fermMassFlow(part_data['fermenter_eff'], mass_flows[-1]))
+mass_flows.append(mass_calcs.filtMassFlow(part_data['filter_eff'], mass_flows[-1]))
+mass_flows.append(mass_calcs.distMassFlow(part_data['distiller_eff'], mass_flows[-1]))
+mass_flows.append(mass_calcs.dehyMassFlow(part_data['dehydrator_eff'], mass_flows[-1]))
+fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
+
+flow_rate = part_data['flow_rate']
+
+energy_loss = 0
+cost = 0
+
+print(part_data)
+print(layout_data)
+print(layout_data['init']['pipes'])
+
+# pipes
+i = 0
+while i < 5: # 5 process stages
+    j = 0
+    current_key = list(layout_data.keys())[i]
+    while (type(layout_data[current_key]['pipes']) != type(None) and j < len(layout_data[current_key]['pipes'])):
+       pipe = layout_data[current_key]['pipes'][j]
+       pipe_vals = get_values("pipe", pipe[0], pipe[1])
+       energy_loss += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
+       print(f"{pipe_vals[1]}, {pipe[1]}\n")
+       cost += float(pipe_vals[1]) * float(pipe[1]) # cost per m * pipe m
+       print(f"At stage {i}, the energy loss is {energy_loss} and the cost is {cost}.\n")
+       j += 1
+    i += 1
+
+# bends
+'''
+i = 0
+while i < 5:
+    j = 0
+    current_key = list(layout_data.keys())[i]
+    while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
+        bend = layout_data[current_key]['bends'][i]
+        bend_vals = get_values("bend", bend[0], bend[1])
+'''
+
+
+# after pump
+
+'''
 while user_in != 0:
     user_in = input("1 = input pipe\n2 = input bend\n3 = input pump\n4 = input duct\n\n0 = exit\n")
     if user_in == "1":
@@ -36,14 +88,10 @@ while user_in != 0:
 
 # set up densities
 # fluid_d = [mass_calcs.initFluidDensity]
-mass_flows = [mass_calcs.initMassFlow(float(input("Volume? ")))]
-mass_flows.append(mass_calcs.fermMassFlow(float(input("Fermenter efficiency? ")), mass_flows[-1]))
-mass_flows.append(mass_calcs.filtMassFlow(float(input("Filter efficiency? ")), mass_flows[-1]))
-mass_flows.append(mass_calcs.distMassFlow(float(input("Distiller efficiency? ")), mass_flows[-1]))
-mass_flows.append(mass_calcs.dehyMassFlow(float(input("Dehydrator efficiency? ")), mass_flows[-1]))
-fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
-# ferm, filter, dist, deh
+'''
 
+# ferm, filter, dist, deh
+'''
 process_pipes = [int(input("Number of pipes before fermenter? "))]
 process_pipes.append(int(input("Number of pipes before filter? ")))
 process_pipes.append(int(input("Number of pipes before distiller? ")))
@@ -81,7 +129,7 @@ while i < len(bends):
 #     energy_loss *= (1 - pump_effs[i])
 #     i += 1
 
-'''
+
 i = 0
 process_point = 0
 while i < len(pipes):
