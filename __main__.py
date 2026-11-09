@@ -76,8 +76,16 @@ while i < len(bends):
     if i == sum(process_bends[:process_point]): process_point += 1
     i += 1
 
+
 # while i < len(pump_effs):
 #     energy_loss *= (1 - pump_effs[i])
 #     i += 1
 
+'''
+i = 0
+process_point = 0
+while i < len(pipes):
+    energy_loss += energy.calc_head_loss(float(pipes[i][0][0]), flow_rate, float(pipes[i][2]), float(pipes[i][1]))
+    i += 1
+'''
 print(f"Energy loss: {energy_loss} \nCost: {cost}")
