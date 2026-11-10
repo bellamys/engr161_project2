@@ -6,16 +6,16 @@
 # i put in places where values should be, also idk if these are in order bc it should be fermenter --> filter --> distiller --> dehydrator
 init:
   pipes:
-    - ['Glorious', '0.10', 4]
+    - ['Glorious', '0.10', 1.21]
   bends:
   pumps:
   valves:
     - ['Outstanding', '0.13']
 after_fermenter:
   pipes:
-    - ['Better', '0.11', 1.6]
-    - ['Better', '0.11', 1.6]
-    - ['Better', '0.11', 41.4]
+    - ['Better', '0.11', 0.49]
+    - ['Better', '0.11', 0.49]
+    - ['Better', '0.11', 12.62]
   bends:
     - ['75', '0.12']
     - ['75', '0.12']

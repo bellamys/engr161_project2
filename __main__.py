@@ -9,7 +9,6 @@ DISCHARGE_COEFF = 0.65
 user_in = -1
 pipes = []
 bends = []
-pump_effs = []
 
 # 7 pipe bends, 2 75 deg, 5 90 deg
 
@@ -29,8 +28,8 @@ fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
 flow_rate = part_data['flow_rate']
 
-energy_loss = [0, 0, 0, 0]
-cost = [0, 0, 0, 0]
+energy_loss = [0, 0, 0]
+cost = [0, 0, 0]
 
 pipe = [0, 0]
 bend = [0, 0]
@@ -176,5 +175,9 @@ while i < len(pipes):
     energy_loss += energy.calc_head_loss(float(pipes[i][0][0]), flow_rate, float(pipes[i][2]), float(pipes[i][1]))
     i += 1
 '''
-print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves, pumps])\n")
-print(f"Total energy loss: {sum(energy_loss)}\nTotal cost: {sum(cost)}\n")
+pump_in = sum(energy_loss) / part_data['pump_eff']
+pump_loss = (1 - part_data['pump_eff']) * pump_in
+
+print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves])\n")
+
+print(f"Total energy loss: {sum(energy_loss) + pump_loss}\nTotal cost: {sum(cost)}\n")
