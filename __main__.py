@@ -10,7 +10,7 @@ PUMP_EPM = '27'
 PUMP_GRADE = 'Cheap'
 
 FLOW_RATE = 0.01 # fix this, should not be constant
-VOLUME = 3000
+VOLUME = 3161.58
 
 # units are 'Scrap', 'Average', 'Premium', or 'World-Class'
 FERMENTER = 'Scrap'
@@ -65,21 +65,22 @@ mass_flows.append(mass_calcs.dehyMassFlow(part_data['material_removal'][REMOVAL_
 # calculate fluid density for each mass flow
 fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
-flow_rate = FLOW_RATE
+# flow_rate = FLOW_RATE
 
 # assumptions: discharge coefficient is always 0.65, leak radius ranges from .001-.01 m, pressure drop ranges from 50-60psi * pascal conversion factor, num leaks ranges from 0-2
-flow1_rate = []
+flow_rate = []
 i = 0
 while i < 5:
     leak_info = mass_calcs.leakValues()
-    flow1_rate.append(mass_calcs.volumetricFlowRate(mass_flows[i], DISCHARGE_COEFF, leak_info))
+    flow_rate.append(mass_calcs.volumetricFlowRate(mass_flows[i], DISCHARGE_COEFF, leak_info))
+    # computes cost of waste pumps, fermenter, and distiller since based off of mass flow rates
     if i == 1:
-        cost[i] += flow1_rate[i] * part_data['fermenter'][FERMENTER]['cost']
+        cost[i] += flow_rate[i] * part_data['fermenter'][FERMENTER]['cost']
     elif i == 2 or i == 4:
-        cost[i] += flow1_rate[i] * part_data['material_removal'][REMOVAL_UNITS]['cost']
+        cost[i] += flow_rate[i] * part_data['material_removal'][REMOVAL_UNITS]['cost']
     elif i == 3: 
-        cost[i] += flow1_rate[i] * part_data['distiller'][DISTILLER]['cost']
-    print(f"At stage {i}, the flow rate is {flow1_rate[i]} and the cost is {cost[i]:.2f}.\n")
+        cost[i] += flow_rate[i] * part_data['distiller'][DISTILLER]['cost']
+    print(f"At stage {i}, the flow rate is {flow_rate[i]} and the cost is {cost[i]:.2f}.\n")
     i += 1
 
 # initialize arrays
@@ -110,7 +111,7 @@ while i < 5: # 5 process stages
        # gets the additional attributes of pipe from the parts catalog table
        pipe_vals = get_values("pipe", pipe[0], pipe[1])
        # adds the effect of the energy loss and cost
-       energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
+       energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate[i], float(pipe[2]), float(pipe[1]))
        cost[0] += float(pipe_vals[1]) * float(pipe[2]) # cost per m * pipe m
        j += 1
     # print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]}.\n")
@@ -132,7 +133,7 @@ while i < 5: # 5 process stages
        # gets additional bend attributes from parts catalog table
        bend_vals = get_values("bend", bend[0], bend[1])
        # adds bend cost and energy loss
-       energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate, TIME, float(bend_vals[0]), float(bend[1]))
+       energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate[i], TIME, float(bend_vals[0]), float(bend[1]))
        cost[1] += bend_vals[1]
        j += 1
     # print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
@@ -155,7 +156,7 @@ while i < 5:
         # gets additional valve attributes from table
         valve_vals = get_values("valve", valve[0], valve[1])
         # adds energy loss and cost from valve
-        energy_loss[2] += energy.calc_valve_energy_loss(fluid_d[i], TIME, flow_rate, float(valve_vals[0]), float(valve[1]))
+        energy_loss[2] += energy.calc_valve_energy_loss(fluid_d[i], TIME, flow_rate[i], float(valve_vals[0]), float(valve[1]))
         cost[2] += valve_vals[1]
         j += 1
     # print(f"For valves at stage {i}, the energy loss is {energy_loss[2]} and the cost is {cost[2]}.\n")
@@ -171,3 +172,7 @@ print(f"Total energy loss: {sum(energy_loss) + pump_loss}\nTotal cost: {sum(cost
 
 total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
 print(f"Total energy: {total_energy} kJ / day\n")
+
+print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")
+
+print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172} gal / day\n")
