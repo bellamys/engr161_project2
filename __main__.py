@@ -8,6 +8,7 @@ DISCHARGE_COEFF = 0.65
 
 PUMP_EPM = '27'
 PUMP_GRADE = 'Cheap'
+BUILDING_COSTS = 1810000
 
 FLOW_RATE = 0.01 # fix this, should not be constant
 VOLUME = 3161.58
@@ -65,10 +66,9 @@ mass_flows.append(mass_calcs.dehyMassFlow(part_data['material_removal'][REMOVAL_
 # calculate fluid density for each mass flow
 fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
-# flow_rate = FLOW_RATE
-
 # assumptions: discharge coefficient is always 0.65, leak radius ranges from .001-.01 m, pressure drop ranges from 50-60psi * pascal conversion factor, num leaks ranges from 0-2
 flow_rate = []
+total_cost = 0
 i = 0
 while i < 5:
     leak_info = mass_calcs.leakValues()
@@ -166,9 +166,9 @@ while i < 5:
 pump_in = sum(energy_loss) / float(pump[0])
 pump_loss = (1 - float(pump[0])) * pump_in
 
-print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves])\n")
+# print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves])\n")
 
-print(f"Total energy loss: {sum(energy_loss) + pump_loss}\nTotal cost: {sum(cost)}\n")
+print(f"Total energy loss: {sum(energy_loss) + pump_loss:.2e}\n")
 
 total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
 print(f"Total energy: {total_energy} kJ / day\n")
@@ -176,3 +176,5 @@ print(f"Total energy: {total_energy} kJ / day\n")
 print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")
 
 print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172} gal / day\n")
+
+print(f"Total energy: {total_energy:.2e} kJ / day\nTotal cost: ${sum(cost) + total_cost + BUILDING_COSTS:.2f}\n")
