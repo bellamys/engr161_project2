@@ -20,6 +20,7 @@ REMOVAL_UNITS = 'Scrap'
 user_in = -1
 pipes = []
 bends = []
+cost = [0, 0, 0, 0, 0]
 
 pump = get_values('pump', PUMP_GRADE, PUMP_EPM)
 
@@ -41,22 +42,23 @@ fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
 flow_rate = FLOW_RATE
 
-<<<<<<< HEAD
 # assumptions: discharge coefficient is always 0.65, leak radius ranges from .001-.01 m, pressure drop ranges from 50-60psi * pascal conversion factor, num leaks ranges from 0-2
 flow1_rate = []
 i = 0
 while i < 5:
     leak_info = mass_calcs.leakValues()
     flow1_rate.append(mass_calcs.volumetricFlowRate(mass_flows[i], DISCHARGE_COEFF, leak_info))
-    print(f"At stage {i}, the flow rate is {flow1_rate[i]}.\n")
+    if i == 1:
+        cost[i] += flow1_rate[i] * part_data['fermenter'][FERMENTER]['cost']
+    elif i == 2 or i == 4:
+        cost[i] += flow1_rate[i] * part_data['material_removal'][REMOVAL_UNITS]['cost']
+    elif i == 3: 
+        cost[i] += flow1_rate[i] * part_data['distiller'][DISTILLER]['cost']
+    print(f"At stage {i}, the flow rate is {flow1_rate[i]} and the cost is {cost[i]:.2f}.\n")
     i += 1
 
 energy_loss = [0, 0, 0, 0]
-cost = [0, 0, 0, 0]
-=======
 energy_loss = [0, 0, 0]
-cost = [0, 0, 0]
->>>>>>> 8dff8f41a451ce8ecb8887b1d87745a8edba8b8c
 
 pipe = [0, 0]
 bend = [0, 0]
@@ -79,7 +81,7 @@ while i < 5: # 5 process stages
        energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
        cost[0] += float(pipe_vals[1]) * float(pipe[2]) # cost per m * pipe m
        j += 1
-    print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]}.\n")
+    print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]:.2f}.\n")
     i += 1
 
 # bends
@@ -95,7 +97,7 @@ while i < 5: # 5 process stages
        energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate, TIME, float(bend_vals[0]), float(bend[1]))
        cost[1] += bend_vals[1]
        j += 1
-    print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
+    print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]:.2f}.\n")
     i += 1
 
 # valves
@@ -104,13 +106,13 @@ while i < 5:
     j = 0
     current_key = list(layout_data.keys())[i]
     while (type(layout_data[current_key]['valves']) != type(None) and j < len(layout_data[current_key]['valves'])):
-        valve = layout_data[current_key]['valves'][i]
+        valve = layout_data[current_key]['valves'][j]
         print(valve)
         valve_vals = get_values("valve", valve[0], valve[1])
         energy_loss[2] += energy.calc_valve_energy_loss(fluid_d[i], TIME, flow_rate, float(valve_vals[0]), float(valve[1]))
         cost[2] += valve_vals[1]
         j += 1
-    print(f"For valves at stage {i}, the energy loss is {energy_loss[2]} and the cost is {cost[2]}.\n")
+    print(f"For valves at stage {i}, the energy loss is {energy_loss[2]} and the cost is {cost[2]:.2f}.\n")
     i += 1
 
 # pumps
