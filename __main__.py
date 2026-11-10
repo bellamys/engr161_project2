@@ -171,10 +171,10 @@ pump_loss = (1 - float(pump[0])) * pump_in
 print(f"Total energy loss: {sum(energy_loss) + pump_loss:.2e}\n")
 
 total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
-print(f"Total energy: {total_energy} kJ / day\n")
+# print(f"Total energy: {total_energy} kJ / day\n")
 
 print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")
 
-print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172} gal / day\n")
+print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172:.2f} gal / day\n")
 
 print(f"Total energy: {total_energy:.2e} kJ / day\nTotal cost: ${sum(cost) + total_cost + BUILDING_COSTS:.2f}\n")
