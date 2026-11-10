@@ -1,6 +1,9 @@
 ---
 # pipe format: quality, id, length
-# bend format: angle, id
+# bend format: angle, id, pipe loss coeff
+# pump format: quality, pump efficiency
+# valves format: quality, id, flow coeff
+# i put in places where values should be, also idk if these are in order bc it should be fermenter --> filter --> distiller --> dehydrator
 init:
   pipes:
     - ['Glorious', '0.10', 5]
@@ -8,23 +11,40 @@ init:
   bends:
   pumps:
   valves:
+    - []
 after_fermenter:
   pipes:
+    - []
+    - []
+    - []
   bends:
+    - []
+    - []
   pumps:
+    - []
   valves:
+    - []
+    - []
 after_dehydrator:
   pipes:
+    - []
   bends:
   pumps:
   valves:
+    - []
 after_filter:
   pipes:
+    - []
   bends:
   pumps:
   valves:
+    - []
+    - []
 after_distiller:
   pipes:
+    - []
   bends:
   pumps:
   valves:
+    - []
+    - []
