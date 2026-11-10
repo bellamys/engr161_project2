@@ -61,7 +61,7 @@ while i < 5: # 5 process stages
     while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
        bend = layout_data[current_key]['bends'][j]
        bend_vals = get_values("bend", bend[0], bend[1])
-       energy_loss[1] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
+       energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate, TIME, float(bend[2]), float(bend[1]))
        print(f"{bend_vals[1]}, {bend[1]}\n")
        cost[1] += float(bend_vals[1]) * float(bend[1]) # cost per m * pipe m
        print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
