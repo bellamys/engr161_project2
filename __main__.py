@@ -58,7 +58,11 @@ while i < 5:
     i += 1
 
 energy_loss = [0, 0, 0, 0]
+cost = [0, 0, 0, 0]
+=======
+# initialize arrays
 energy_loss = [0, 0, 0]
+cost = [0, 0, 0]
 
 pipe = [0, 0]
 bend = [0, 0]
