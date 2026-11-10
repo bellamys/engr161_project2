@@ -7,10 +7,12 @@ densityEthanol = 789
 densityFiber = 1311
 densityWater = 997
 
+# calculates initial flow density w/ given densities
 def initFluidDensity():
     fluidDensity = .2*densitySugar + .2*densityFiber + .6*densityWater
     return fluidDensity
 
+# calculates initial mass flow for system
 def initMassFlow(volume):
     massFlow = (volume * initFluidDensity())/(24*60*60)
     mfSugar = .2 * massFlow
@@ -19,6 +21,7 @@ def initMassFlow(volume):
     mfEthanol = 0 * massFlow
     return [mfWater, mfFiber, mfSugar, mfEthanol]
 
+# calculates total fluid density using percentage of each component in total mass flows
 def fluidDensity(massFlows):
     massTotal = totalMassFlowRate(massFlows)
     percWater = massFlows[0] / massTotal
@@ -29,6 +32,7 @@ def fluidDensity(massFlows):
                    percSugar * densitySugar + percEthanol * densityEthanol
     return fluidDensity
 
+# calculates sum of used components in system
 def totalMassFlowRate(massFlows):
     massTotal = 0
     i = 0
@@ -37,6 +41,7 @@ def totalMassFlowRate(massFlows):
         i += 1
     return massTotal
 
+# calculates volumetric flow rate, takes into account pipe leakage
 def volumetricFlowRate(massFlows, dischargeCoeff, leakValues):
     totFluDensity = fluidDensity(massFlows)
     massTotal = totalMassFlowRate(massFlows)
@@ -45,17 +50,14 @@ def volumetricFlowRate(massFlows, dischargeCoeff, leakValues):
     volFlowRate = (massTotal / totFluDensity) - (leakValues[2] * pipeLeakage)
     return volFlowRate
 
+# calculates percentage of ethanol produced
 def percEthanol(massFlows):
     massTotal = totalMassFlowRate(massFlows)
     ethanolProd = massFlows[3] / massTotal
     return ethanolProd
 
-def flowVelocity(massFlows, dischargeCoeff, leakValues, pipeRadius):
-    volFlowRate = volumetricFlowRate(massFlows, dischargeCoeff, leakValues)
-    pipeArea = math.pi * math.pow(pipeRadius, 2)
-    flowVel = volFlowRate / pipeArea
-    return flowVel
-
+# generates leak values based off of assumptions
+# assumptions: number of leaks ranges between 0 and 1, pressure drop ranges from 50 to 58/59 psi, and leak radius in between 0.001 and 0.005 m
 def leakValues():
     pascalConverFac = 6894.75729
     numLeaks = int(random.random() * 2)
@@ -63,7 +65,7 @@ def leakValues():
     leakRadius = int(random.random() * 6) * .001
     return [leakRadius, pressureDrop, numLeaks]
 
-# fermenter functions
+# fermenter functions (calculates mass flows after going through fermenter)
 
 def fermMassFlow(fermEff, mfInputs):
     mfWater = mfInputs[0]
@@ -73,7 +75,7 @@ def fermMassFlow(fermEff, mfInputs):
     mfCO2 = .49 * mfInputs[2] * fermEff
     return [mfWater, mfFiber, mfSugar, mfEthanol, mfCO2]
 
-# filter functions
+# filter functions (calculates mass flows after going through filter)
 
 def filtMassFlow(filtEff, mfInputs):
     mfWater = mfInputs[0]
@@ -83,7 +85,7 @@ def filtMassFlow(filtEff, mfInputs):
     fiberWaste = mfInputs[1] * filtEff
     return [mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste]
 
-# distiller functions
+# distiller functions (calculates mass flows after going through distiller)
 
 def distMassFlow(distEff, mfInputs):
     mfDenom = mfInputs[0] + mfInputs[1] + mfInputs[2]
@@ -96,7 +98,7 @@ def distMassFlow(distEff, mfInputs):
     waterWaste = mfInputs[0] - mfWater
     return [mfWater, mfFiber, mfSugar, mfEthanol, fiberWaste, sugarWaste, waterWaste]
 
-# dehydrator functions
+# dehydrator functions (calculates mass flows after going through dehydrator)
 
 def dehyMassFlow(dehyEff, mfInputs):
     mfWater = mfInputs[0] * (1-dehyEff)
