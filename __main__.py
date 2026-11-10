@@ -11,11 +11,11 @@ PUMP_GRADE = 'Cheap'
 BUILDING_COSTS = 1810000
 
 FLOW_RATE = 0.01 # fix this, should not be constant
-VOLUME = 5269.29
+VOLUME = 4215.43 # 4 11600 gal trucks per hour
 
-# units are 'Scrap', 'Average', 'Premium', or 'World-Class'
-FERMENTER = 'Scrap'
-DISTILLER = 'Scrap'
+# units are 'Scrap', 'Average', 'Premium', or 'World-class'
+FERMENTER = 'Average'
+DISTILLER = 'World-class'
 REMOVAL_UNITS = 'Scrap'
 
 user_in = -1
