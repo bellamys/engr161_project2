@@ -16,7 +16,12 @@ def calc_pipe_friction_loss(density, d_t, fric, flow_rate, pipe_length, pipe_id)
     return density * d_t * calc_head_loss(fric, flow_rate, pipe_length, pipe_id)
 
 def calc_bend_loss(density, flow_rate, d_t, bend_fac, pipe_id):
-    return (density * flow_rate * d_t) * (bend_fac * (flow_rate / (math.pi * (pipe_id / 2) ** 2) ** 2 / 2))
+    return (density * flow_rate * d_t) * (bend_fac * (flow_rate / (math.pi * (pipe_id / 2) ** 2) ** 2 / 2)) / 1000
 
+def calc_valve_head_loss(coeff, flow_rate, pipe_id):
+    return (coeff * (flow_rate / (math.pi * (pipe_id / 2) ** 2) ** 2)) / 2
+
+def calc_valve_energy_loss(density, d_t, flow_rate, coeff, pipe_id):
+    return density * d_t * flow_rate * calc_valve_head_loss(coeff, flow_rate, pipe_id) / 1000
 # energy loss due to pipe friction:
 # output mass rate * TIME * friction factor * 
