@@ -1,10 +1,55 @@
 ---
-# config
-flow_rate: 0.01
-volume: 3000
-distiller_eff: 0.90
-filter_eff: 0.80
-fermenter_eff: 0.88
-dehydrator_eff: 0.95
-pump_eff: 0.90
+fermenter:
+  Scrap:
+    energy: 46600
+    efficiency: 0.5
+    cost: 320000
+  Average:
+    energy: 47200
+    efficiency: 0.75
+    cost: 380000
+  Premium:
+    energy: 47500
+    efficiency: 0.90
+    cost: 460000
+  World-class:
+    energy: 48000
+    efficiency: 0.95
+    cost: 1100000
+
+distiller:
+  Scrap:
+    energy: 47004
+    efficiency: 0.81
+    cost: 390000
+  Average:
+    energy: 47812
+    efficiency: 0.9
+    cost: 460000
+  Premium:
+    energy: 48200
+    efficiency: 0.915
+    cost: 560000
+  World-class:
+    energy: 49500
+    efficiency: 0.98
+    cost: 1370000
+
+material_removal:
+  Scrap:
+    energy: 48800
+    efficiency: 0.5
+    cost: 200000
+  Average:
+    energy: 49536
+    efficiency: 0.75
+    cost: 240000
+  Premium:
+    energy: 50350
+    efficiency: 0.90
+    cost: 280000
+  World-class:
+    energy: 51000
+    efficiency: 0.98
+    cost: 480000
 ...
