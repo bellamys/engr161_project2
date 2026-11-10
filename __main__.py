@@ -68,7 +68,39 @@ while i < 5: # 5 process stages
        j += 1
     i += 1
 
+# valves
+'''
+i = 0
+while i < 5: 
+    j = 0
+    current_key = list(layout_data.keys())[i]
+    while (type(layout_data[current_key]['valves']) != type(None) and j < len(layout_data[current_key]['valves'])):
+        valve = layout_data[current_key]['valves'][i]
+        valve_vals = get_values("valve", valve[0], valve[1])
+        energy_loss += energy.calc_bend_loss(fluid_d[i], flow_rate, TIME, float(valve[2]), float(valve[1])) # valve energy loss uses same eq as bend energy loss
+        print(f"{valve_vals[1]}, {valve[1]}\n")
+        cost += float(valve_vals[1]) * float(valve[1])
+        print(f"At stage {i}, the energy loss is {energy_loss} and the cost is {cost}.\n")
+        j += 1
+    i += 1
+'''
 
+# pumps
+'''
+i = 0
+while i < 5: 
+    j = 0
+    current_key = list(layout_data.keys())[i]
+    while (type(layout_data[current_key]['pumps']) != type(None) and j < len(layout_data[current_key]['pumps'])):
+        pump = layout_data[current_key]['pumps'][i]
+        pump_vals = get_values("pump", pump[0], pump[1])
+        energy_loss += energy. # i'm not sure how you want pump loss to be calculated
+        print(f"{pump_vals[1]}, {pump[1]}\n")
+        cost += float(pump_vals[1]) * float(pump[1])
+        print(f"At stage {i}, the energy loss is {energy_loss} and the cost is {cost}.\n")
+        j += 1
+    i += 1
+'''
 # after pump
 
 '''
