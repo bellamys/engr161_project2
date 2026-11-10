@@ -6,10 +6,22 @@ import yaml
 TIME = 24*3600
 DISCHARGE_COEFF = 0.65
 
+PUMP_EPM = '27'
+PUMP_GRADE = 'Cheap'
+
+FLOW_RATE = 0.01 # fix this, should not be constant
+VOLUME = 3000
+
+# units are 'Scrap', 'Average', 'Premium', or 'World-Class'
+FERMENTER = 'Scrap'
+DISTILLER = 'Scrap'
+REMOVAL_UNITS = 'Scrap'
+
 user_in = -1
 pipes = []
 bends = []
-pump_effs = []
+
+pump = get_values('pump', PUMP_GRADE, PUMP_EPM)
 
 # 7 pipe bends, 2 75 deg, 5 90 deg
 
@@ -20,15 +32,16 @@ with open('layout.yml', 'r') as fid:
 with open('part_config.yml', 'r') as fid:
     part_data = yaml.load(fid, Loader=yaml.SafeLoader)
 
-mass_flows = [mass_calcs.initMassFlow(part_data['volume'])]
-mass_flows.append(mass_calcs.fermMassFlow(part_data['fermenter_eff'], mass_flows[-1]))
-mass_flows.append(mass_calcs.filtMassFlow(part_data['filter_eff'], mass_flows[-1]))
-mass_flows.append(mass_calcs.distMassFlow(part_data['distiller_eff'], mass_flows[-1]))
-mass_flows.append(mass_calcs.dehyMassFlow(part_data['dehydrator_eff'], mass_flows[-1]))
+mass_flows = [mass_calcs.initMassFlow(VOLUME)]
+mass_flows.append(mass_calcs.fermMassFlow(part_data['fermenter'][FERMENTER]['efficiency'], mass_flows[-1]))
+mass_flows.append(mass_calcs.filtMassFlow(part_data['material_removal'][REMOVAL_UNITS]['efficiency'], mass_flows[-1]))
+mass_flows.append(mass_calcs.distMassFlow(part_data['distiller'][DISTILLER]['efficiency'], mass_flows[-1]))
+mass_flows.append(mass_calcs.dehyMassFlow(part_data['material_removal'][REMOVAL_UNITS]['efficiency'], mass_flows[-1]))
 fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
-flow_rate = part_data['flow_rate']
+flow_rate = FLOW_RATE
 
+<<<<<<< HEAD
 # assumptions: discharge coefficient is always 0.65, leak radius ranges from .001-.01 m, pressure drop ranges from 50-60psi * pascal conversion factor, num leaks ranges from 0-2
 flow1_rate = []
 i = 0
@@ -40,6 +53,10 @@ while i < 5:
 
 energy_loss = [0, 0, 0, 0]
 cost = [0, 0, 0, 0]
+=======
+energy_loss = [0, 0, 0]
+cost = [0, 0, 0]
+>>>>>>> 8dff8f41a451ce8ecb8887b1d87745a8edba8b8c
 
 pipe = [0, 0]
 bend = [0, 0]
@@ -185,5 +202,12 @@ while i < len(pipes):
     energy_loss += energy.calc_head_loss(float(pipes[i][0][0]), flow_rate, float(pipes[i][2]), float(pipes[i][1]))
     i += 1
 '''
-print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves, pumps])\n")
-print(f"Total energy loss: {sum(energy_loss)}\nTotal cost: {sum(cost)}\n")
+pump_in = sum(energy_loss) / float(pump[0])
+pump_loss = (1 - float(pump[0])) * pump_in
+
+print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves])\n")
+
+print(f"Total energy loss: {sum(energy_loss) + pump_loss}\nTotal cost: {sum(cost)}\n")
+
+total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
+print(f"Total energy: {total_energy} kJ / day\n")
