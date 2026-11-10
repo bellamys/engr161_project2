@@ -1,4 +1,5 @@
 import math
+import random
 
 # initial/general functions
 densitySugar = 1599
@@ -36,12 +37,12 @@ def totalMassFlowRate(massFlows):
         i += 1
     return massTotal
 
-def volumetricFlowRate(massFlows, dischargeCoeff, leakRadius, pressureDrop, numLeaks):
+def volumetricFlowRate(massFlows, dischargeCoeff, leakValues):
     totFluDensity = fluidDensity(massFlows)
     massTotal = totalMassFlowRate(massFlows)
-    pipeLeakage = dischargeCoeff * (math.pi * math.pow(leakRadius, 2)) * \
-                  math.sqrt(2 * (pressureDrop / totFluDensity))
-    volFlowRate = (massTotal / totFluDensity) - (numLeaks * pipeLeakage)
+    pipeLeakage = dischargeCoeff * (math.pi * math.pow(leakValues[0], 2)) * \
+                  math.sqrt(2 * (leakValues[1] / totFluDensity))
+    volFlowRate = (massTotal / totFluDensity) - (leakValues[2] * pipeLeakage)
     return volFlowRate
 
 def percEthanol(massFlows):
@@ -49,11 +50,18 @@ def percEthanol(massFlows):
     ethanolProd = massFlows[3] / massTotal
     return ethanolProd
 
-def flowVelocity(massFlows, dischargeCoeff, leakRadius, pressureDrop, numLeaks, pipeRadius):
-    volFlowRate = volumetricFlowRate(massFlows, dischargeCoeff, leakRadius, pressureDrop, numLeaks)
+def flowVelocity(massFlows, dischargeCoeff, leakValues, pipeRadius):
+    volFlowRate = volumetricFlowRate(massFlows, dischargeCoeff, leakValues)
     pipeArea = math.pi * math.pow(pipeRadius, 2)
     flowVel = volFlowRate / pipeArea
     return flowVel
+
+def leakValues():
+    pascalConverFac = 6894.75729
+    numLeaks = int(random.random() * 2)
+    pressureDrop = int((random.random() * 9) + 50) * pascalConverFac
+    leakRadius = int(random.random() * 6) * .001
+    return [leakRadius, pressureDrop, numLeaks]
 
 # fermenter functions
 

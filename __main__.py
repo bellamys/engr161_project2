@@ -64,9 +64,23 @@ fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
 flow_rate = FLOW_RATE
 
+<<<<<<< HEAD
+# assumptions: discharge coefficient is always 0.65, leak radius ranges from .001-.01 m, pressure drop ranges from 50-60psi * pascal conversion factor, num leaks ranges from 0-2
+flow1_rate = []
+i = 0
+while i < 5:
+    leak_info = mass_calcs.leakValues()
+    flow1_rate.append(mass_calcs.volumetricFlowRate(mass_flows[i], DISCHARGE_COEFF, leak_info))
+    print(f"At stage {i}, the flow rate is {flow1_rate[i]}.\n")
+    i += 1
+
+energy_loss = [0, 0, 0, 0]
+cost = [0, 0, 0, 0]
+=======
 # initialize arrays
 energy_loss = [0, 0, 0]
 cost = [0, 0, 0]
+>>>>>>> 8dff8f41a451ce8ecb8887b1d87745a8edba8b8c
 
 pipe = [0, 0]
 bend = [0, 0]
