@@ -29,8 +29,8 @@ fluid_d = [mass_calcs.fluidDensity(i) for i in mass_flows]
 
 flow_rate = part_data['flow_rate']
 
-energy_loss = 0
-cost = 0
+energy_loss = [0, 0, 0, 0]
+cost = [0, 0, 0, 0]
 
 print(part_data)
 print(layout_data)
@@ -38,29 +38,35 @@ print(layout_data['init']['pipes'])
 
 # pipes
 i = 0
+
 while i < 5: # 5 process stages
     j = 0
     current_key = list(layout_data.keys())[i]
     while (type(layout_data[current_key]['pipes']) != type(None) and j < len(layout_data[current_key]['pipes'])):
        pipe = layout_data[current_key]['pipes'][j]
        pipe_vals = get_values("pipe", pipe[0], pipe[1])
-       energy_loss += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
+       energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
        print(f"{pipe_vals[1]}, {pipe[1]}\n")
-       cost += float(pipe_vals[1]) * float(pipe[1]) # cost per m * pipe m
-       print(f"At stage {i}, the energy loss is {energy_loss} and the cost is {cost}.\n")
+       cost[0] += float(pipe_vals[1]) * float(pipe[1]) # cost per m * pipe m
+       print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]}.\n")
        j += 1
     i += 1
 
 # bends
-'''
+
 i = 0
-while i < 5:
+while i < 5: # 5 process stages
     j = 0
     current_key = list(layout_data.keys())[i]
     while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
-        bend = layout_data[current_key]['bends'][i]
-        bend_vals = get_values("bend", bend[0], bend[1])
-'''
+       bend = layout_data[current_key]['bends'][j]
+       bend_vals = get_values("bend", bend[0], bend[1])
+       energy_loss[1] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate, float(pipe[2]), float(pipe[1]))
+       print(f"{bend_vals[1]}, {bend[1]}\n")
+       cost[1] += float(bend_vals[1]) * float(bend[1]) # cost per m * pipe m
+       print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
+       j += 1
+    i += 1
 
 
 # after pump
