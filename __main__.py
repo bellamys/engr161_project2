@@ -11,7 +11,7 @@ PUMP_GRADE = 'Cheap'
 BUILDING_COSTS = 1810000
 
 FLOW_RATE = 0.01 # fix this, should not be constant
-VOLUME = 3161.58
+VOLUME = 5269.29
 
 # units are 'Scrap', 'Average', 'Premium', or 'World-Class'
 FERMENTER = 'Scrap'
