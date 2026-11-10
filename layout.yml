@@ -25,16 +25,24 @@ after_fermenter:
     - ['Questionable', '0.12']
 after_dehydrator:
   pipes:
+    - ['Better', '0.11', 1.21]
   bends:
   pumps:
   valves:
+    - ['Questionable', '0.12']
 after_filter:
   pipes:
+    - ['Better', '0.11', 2.75]
   bends:
   pumps:
   valves:
+    - ['Questionable', '0.12']
+    - ['Questionable', '0.12']
 after_distiller:
   pipes:
+    - ['Better', '0.11', 2.75]
   bends:
   pumps:
   valves:
+    - ['Questionable', '0.12']
+    - ['Questionable', '0.12']
