@@ -1,0 +1,9 @@
+---
+# config
+flow_rate: 0.01
+volume: 1000
+distiller_eff: 0.90
+filter_eff: 0.80
+fermenter_eff: 0.88
+dehydrator_eff: 0.95
+...
