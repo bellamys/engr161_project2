@@ -1,7 +1,7 @@
 import energy
 import csv
 import mass_calcs
-import yaml
+import yaml # external package: https://github.com/yaml/pyyaml/
 
 TIME = 24*3600
 DISCHARGE_COEFF = 0.65
