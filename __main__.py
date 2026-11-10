@@ -80,7 +80,6 @@ while i < 5:
         cost[i] += flow_rate[i] * part_data['material_removal'][REMOVAL_UNITS]['cost']
     elif i == 3: 
         cost[i] += flow_rate[i] * part_data['distiller'][DISTILLER]['cost']
-    print(f"At stage {i}, the flow rate is {flow_rate[i]} and the cost is {cost[i]:.2f}.\n")
     i += 1
 
 # initialize arrays
