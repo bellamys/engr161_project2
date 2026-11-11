@@ -6,29 +6,29 @@ init:
   valves:
 after_fermenter:
   pipes:
-    - ['Better', '0.10', 3.05]
+    - ['Nice', '0.12', 3.05]
   bends:
   pumps:
   valves:
 after_dehydrator:
   pipes:
-    - ['Better', '0.10', 1.52]
-    - ['Better', '0.10', 12.19]
+    - ['Nice', '0.12', 1.52]
+    - ['Nice', '0.12', 12.19]
   bends:
-    - ['90', '0.10']
+    - ['90', '0.12']
   pumps:
   valves:
 after_filter:
   pipes:
-    - ['Better', '0.10', 0.91]
-    - ['Better', '0.10', 6.10]
+    - ['Nice', '0.12', 0.91]
+    - ['Nice', '0.12', 6.10]
   bends:
-    - ['90', '0.10']
+    - ['90', '0.12']
   pumps:
   valves:
 after_distiller:
   pipes:
-    - ['Better', '0.10', 0.61]
+    - ['Nice', '0.12', 0.61]
   bends:
   pumps:
   valves:

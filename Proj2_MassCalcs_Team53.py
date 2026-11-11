@@ -76,7 +76,7 @@ def volumetricFlowRate(massFlows, dischargeCoeff, leakValues):
     totFluDensity = fluidDensity(massFlows)
     massTotal = totalMassFlowRate(massFlows)
     pipeLeakage = dischargeCoeff * (math.pi * math.pow(leakValues[0], 2)) * \
-                  math.sqrt(2 * (leakValues[1] / totFluDensity))
+    math.sqrt(2 * (leakValues[1] / totFluDensity))
     volFlowRate = (massTotal / totFluDensity) - (leakValues[2] * pipeLeakage)
     return volFlowRate
 

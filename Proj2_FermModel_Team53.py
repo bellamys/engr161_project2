@@ -40,14 +40,14 @@ DISCHARGE_COEFF = 0.65
 
 # additional configuration values
 PUMP_EPM = '27'
-PUMP_GRADE = 'Cheap'
+PUMP_GRADE = 'High-Grade'
 BUILDING_COSTS = 1810000
-VOLUME = 4215.43 # 4 11600 gal trucks per hour
+VOLUME = (4215.43 / 4) * 3 # 3 11600 gal trucks per hour
 
 # units are 'Scrap', 'Average', 'Premium', or 'World-class'
-FERMENTER = 'Average'
+FERMENTER = 'Premium'
 DISTILLER = 'World-class'
-REMOVAL_UNITS = 'Scrap'
+REMOVAL_UNITS = 'Average'
 
 pipes = []
 bends = []
@@ -100,6 +100,7 @@ def calc_layout(layout_data, energy_loss, cost):
         # sets key for stage of progress
         current_key = list(layout_data.keys())[i]
         # iterates for each pipe in progress stage
+        # only does so if a part in this stage exists
         while (type(layout_data[current_key]['pipes']) != type(None) and j < len(layout_data[current_key]['pipes'])):
             # sets "pipe" variable to the list of pipe data given in layout
             pipe = layout_data[current_key]['pipes'][j]
@@ -120,6 +121,7 @@ def calc_layout(layout_data, energy_loss, cost):
     while i < 5: # 5 process stages
         j = 0
         # gets key for current process stage
+        # only does so if part in this stage exists
         current_key = list(layout_data.keys())[i]
         # iterates once for every bend in proces stage
         while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
@@ -145,6 +147,7 @@ def calc_layout(layout_data, energy_loss, cost):
         # gets key of current process stage
         current_key = list(layout_data.keys())[i]
         # iterates for each valve in process stage
+        # only does so if this stage exists
         while (type(layout_data[current_key]['valves']) != type(None) and j < len(layout_data[current_key]['valves'])):
             # sets variable "valve" to list of valve data from layout file
             valve = layout_data[current_key]['valves'][j]
@@ -227,4 +230,4 @@ print (f"Energy output: {outputEnergy:.2e} kJ / day\n")
 
 print(f"Waste energy loss: {sum(waste_energy_loss):.2e} kJ / day, waste system cost: ${sum(waste_cost):.2f}\n")
 
-print(f"Total energy in: {energy_in:.2e} kJ / day\nEnergy ROI: {outputEnergy / (energy_in):.2f}\nTotal cost: ${sum(cost) + sum(waste_cost) + total_cost + BUILDING_COSTS:.2f}\n")
+print(f"Total energy in: {energy_in:.2e} kJ / day\nEnergy ROI: {outputEnergy / (energy_in):.2f}\nTotal cost: ${sum(main_cost) + sum(waste_cost) + total_cost + BUILDING_COSTS:.2f}\n")
