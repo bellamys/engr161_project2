@@ -1,0 +1,34 @@
+---
+init:
+  pipes:
+  bends:
+  pumps:
+  valves:
+after_fermenter:
+  pipes:
+    - ['Better', '0.10', 3.05]
+  bends:
+  pumps:
+  valves:
+after_dehydrator:
+  pipes:
+    - ['Better', '0.10', 1.52]
+    - ['Better', '0.10', 12.19]
+  bends:
+    - ['90', '0.10']
+  pumps:
+  valves:
+after_filter:
+  pipes:
+    - ['Better', '0.10', 0.91]
+    - ['Better', '0.10', 6.10]
+  bends:
+    - ['90', '0.10']
+  pumps:
+  valves:
+after_distiller:
+  pipes:
+    - ['Better', '0.10', 0.61]
+  bends:
+  pumps:
+  valves:
