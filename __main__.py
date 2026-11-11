@@ -11,11 +11,11 @@ PUMP_GRADE = 'Cheap'
 BUILDING_COSTS = 1810000
 
 FLOW_RATE = 0.01 # fix this, should not be constant
-VOLUME = 3161.58
+VOLUME = 4215.43 # 4 11600 gal trucks per hour
 
-# units are 'Scrap', 'Average', 'Premium', or 'World-Class'
-FERMENTER = 'Scrap'
-DISTILLER = 'Scrap'
+# units are 'Scrap', 'Average', 'Premium', or 'World-class'
+FERMENTER = 'Average'
+DISTILLER = 'World-class'
 REMOVAL_UNITS = 'Scrap'
 
 user_in = -1
@@ -151,7 +151,6 @@ while i < 5:
         cost[i] += flow_rate[i] * part_data['material_removal'][REMOVAL_UNITS]['cost']
     elif i == 3: 
         cost[i] += flow_rate[i] * part_data['distiller'][DISTILLER]['cost']
-    print(f"At stage {i}, the flow rate is {flow_rate[i]} and the cost is {cost[i]:.2f}.\n")
     i += 1
 
 # initialize arrays
@@ -183,7 +182,7 @@ pump_loss = (1 - float(pump[0])) * pump_in
 
 print(f"Total energy loss: {sum(main_energy_loss) + pump_loss:.2e}\n")
 
-total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
+total_energy = pump_in + 3600 * (part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy'])
 # print(f"Total energy: {total_energy} kJ / day\n")
 
 print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")

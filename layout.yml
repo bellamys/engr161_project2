@@ -10,39 +10,39 @@ init:
   bends:
   pumps:
   valves:
-    - ['Outstanding', '0.13']
+    - ['Outstanding', '0.10']
 after_fermenter:
   pipes:
-    - ['Better', '0.11', 0.49]
-    - ['Better', '0.11', 0.49]
-    - ['Better', '0.11', 12.62]
+    - ['Better', '0.10', 0.49]
+    - ['Better', '0.10', 0.49]
+    - ['Better', '0.10', 12.62]
   bends:
     - ['75', '0.12']
     - ['75', '0.12']
   pumps:
   valves:
-    - ['Questionable', '0.12']
-    - ['Questionable', '0.12']
+    - ['Questionable', '0.10']
+    - ['Questionable', '0.10']
 after_dehydrator:
   pipes:
-    - ['Better', '0.11', 1.21]
+    - ['Better', '0.10', 1.21]
   bends:
   pumps:
   valves:
-    - ['Questionable', '0.12']
+    - ['Questionable', '0.10']
 after_filter:
   pipes:
-    - ['Better', '0.11', 2.75]
+    - ['Better', '0.10', 2.75]
   bends:
   pumps:
   valves:
-    - ['Questionable', '0.12']
-    - ['Questionable', '0.12']
+    - ['Questionable', '0.10']
+    - ['Questionable', '0.10']
 after_distiller:
   pipes:
-    - ['Better', '0.11', 2.75]
+    - ['Better', '0.10', 2.75]
   bends:
   pumps:
   valves:
-    - ['Questionable', '0.12']
-    - ['Questionable', '0.12']
+    - ['Questionable', '0.10']
+    - ['Questionable', '0.10']
