@@ -45,12 +45,83 @@ def get_values(type, quality, parameter):
 
     return [float(vals[1][column]), float(vals[row][column])]
 
+def calc_layout(layout_data, energy_loss, cost):
+    # pipes
+    i = 0
+
+    # calculate energy loss due to pipe friction
+    while i < 5: # 5 process stages
+        j = 0
+        # sets key for stage of progress
+        current_key = list(layout_data.keys())[i]
+        # iterates for each pipe in progress stage
+        while (type(layout_data[current_key]['pipes']) != type(None) and j < len(layout_data[current_key]['pipes'])):
+            # sets "pipe" variable to the list of pipe data given in layout
+            pipe = layout_data[current_key]['pipes'][j]
+            #  print(pipe)
+            # gets the additional attributes of pipe from the parts catalog table
+            pipe_vals = get_values("pipe", pipe[0], pipe[1])
+            # adds the effect of the energy loss and cost
+            energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate[i], float(pipe[2]), float(pipe[1]))
+            cost[0] += float(pipe_vals[1]) * float(pipe[2]) # cost per m * pipe m
+            j += 1
+        # print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]}.\n")
+        i += 1
+
+    # bends
+
+    # calculate energy loss due to bends
+    i = 0
+    while i < 5: # 5 process stages
+        j = 0
+        # gets key for current process stage
+        current_key = list(layout_data.keys())[i]
+        # iterates once for every bend in proces stage
+        while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
+            # sets "bend" variable to the list of bend data given in layout
+            bend = layout_data[current_key]['bends'][j]
+            #  print(bend)
+            # gets additional bend attributes from parts catalog table
+            bend_vals = get_values("bend", bend[0], bend[1])
+            # adds bend cost and energy loss
+            energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate[i], TIME, float(bend_vals[0]), float(bend[1]))
+            cost[1] += bend_vals[1]
+            j += 1
+        # print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
+        i += 1
+
+    # valves
+
+    # calculate energy loss from valves
+    i = 0
+    # iterates once for each of the 5 process stages
+    while i < 5: 
+        j = 0
+        # gets key of current process stage
+        current_key = list(layout_data.keys())[i]
+        # iterates for each valve in process stage
+        while (type(layout_data[current_key]['valves']) != type(None) and j < len(layout_data[current_key]['valves'])):
+            # sets variable "valve" to list of valve data from layout file
+            valve = layout_data[current_key]['valves'][j]
+            # print(valve)
+            # gets additional valve attributes from table
+            valve_vals = get_values("valve", valve[0], valve[1])
+            # adds energy loss and cost from valve
+            energy_loss[2] += energy.calc_valve_energy_loss(fluid_d[i], TIME, flow_rate[i], float(valve_vals[0]), float(valve[1]))
+            cost[2] += valve_vals[1]
+            j += 1
+        # print(f"For valves at stage {i}, the energy loss is {energy_loss[2]} and the cost is {cost[2]}.\n")
+        i += 1
+
 pump = get_values('pump', PUMP_GRADE, PUMP_EPM)
 
 # parse yaml data
 # layout file contains info of used parts
 with open('layout.yml', 'r') as fid: 
-    layout_data = yaml.load(fid, Loader=yaml.SafeLoader)
+    main_layout_data = yaml.load(fid, Loader=yaml.SafeLoader)
+
+with open('waste_layout.yml', 'r') as fid: 
+    waste_layout_data = yaml.load(fid, Loader=yaml.SafeLoader)
 
 # part_config file contains info from the machine tables
 with open('part_config.yml', 'r') as fid:
@@ -84,8 +155,15 @@ while i < 5:
     i += 1
 
 # initialize arrays
-energy_loss = [0, 0, 0]
-cost = [0, 0, 0]
+main_energy_loss = [0, 0, 0]
+main_cost = [0, 0, 0]
+
+calc_layout(main_layout_data, main_energy_loss, main_cost)
+
+waste_energy_loss = [0, 0, 0]
+waste_cost = [0, 0, 0]
+
+calc_layout(waste_layout_data, waste_energy_loss, waste_cost)
 
 pipe = [0, 0]
 bend = [0, 0]
@@ -95,80 +173,15 @@ bend = [0, 0]
 # print(layout_data)
 # print(layout_data['init']['pipes'])
 
-# pipes
-i = 0
 
-# calculate energy loss due to pipe friction
-while i < 5: # 5 process stages
-    j = 0
-    # sets key for stage of progress
-    current_key = list(layout_data.keys())[i]
-    # iterates for each pipe in progress stage
-    while (type(layout_data[current_key]['pipes']) != type(None) and j < len(layout_data[current_key]['pipes'])):
-       # sets "pipe" variable to the list of pipe data given in layout
-       pipe = layout_data[current_key]['pipes'][j]
-    #  print(pipe)
-       # gets the additional attributes of pipe from the parts catalog table
-       pipe_vals = get_values("pipe", pipe[0], pipe[1])
-       # adds the effect of the energy loss and cost
-       energy_loss[0] += energy.calc_pipe_friction_loss(fluid_d[i], TIME, float(pipe_vals[0]), flow_rate[i], float(pipe[2]), float(pipe[1]))
-       cost[0] += float(pipe_vals[1]) * float(pipe[2]) # cost per m * pipe m
-       j += 1
-    # print(f"For pipes at stage {i}, the energy loss is {energy_loss[0]} and the cost is {cost[0]}.\n")
-    i += 1
-
-# bends
-
-# calculate energy loss due to bends
-i = 0
-while i < 5: # 5 process stages
-    j = 0
-    # gets key for current process stage
-    current_key = list(layout_data.keys())[i]
-    # iterates once for every bend in proces stage
-    while (type(layout_data[current_key]['bends']) != type(None) and j < len(layout_data[current_key]['bends'])):
-       # sets "bend" variable to the list of bend data given in layout
-       bend = layout_data[current_key]['bends'][j]
-    #  print(bend)
-       # gets additional bend attributes from parts catalog table
-       bend_vals = get_values("bend", bend[0], bend[1])
-       # adds bend cost and energy loss
-       energy_loss[1] += energy.calc_bend_loss(fluid_d[i], flow_rate[i], TIME, float(bend_vals[0]), float(bend[1]))
-       cost[1] += bend_vals[1]
-       j += 1
-    # print(f"For bends at stage {i}, the energy loss is {energy_loss[1]} and the cost is {cost[1]}.\n")
-    i += 1
-
-# valves
-
-# calculate energy loss from valves
-i = 0
-# iterates once for each of the 5 process stages
-while i < 5: 
-    j = 0
-    # gets key of current process stage
-    current_key = list(layout_data.keys())[i]
-    # iterates for each valve in process stage
-    while (type(layout_data[current_key]['valves']) != type(None) and j < len(layout_data[current_key]['valves'])):
-        # sets variable "valve" to list of valve data from layout file
-        valve = layout_data[current_key]['valves'][j]
-        # print(valve)
-        # gets additional valve attributes from table
-        valve_vals = get_values("valve", valve[0], valve[1])
-        # adds energy loss and cost from valve
-        energy_loss[2] += energy.calc_valve_energy_loss(fluid_d[i], TIME, flow_rate[i], float(valve_vals[0]), float(valve[1]))
-        cost[2] += valve_vals[1]
-        j += 1
-    # print(f"For valves at stage {i}, the energy loss is {energy_loss[2]} and the cost is {cost[2]}.\n")
-    i += 1
 
 # find energy into pump based on energy lost by pump
-pump_in = sum(energy_loss) / float(pump[0])
+pump_in = sum(main_energy_loss) / float(pump[0])
 pump_loss = (1 - float(pump[0])) * pump_in
 
 # print(f"Energy loss: {energy_loss} \nCost: {cost}\n(Format: [pipes, bends, valves])\n")
 
-print(f"Total energy loss: {sum(energy_loss) + pump_loss:.2e}\n")
+print(f"Total energy loss: {sum(main_energy_loss) + pump_loss:.2e}\n")
 
 total_energy = pump_in + part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy']
 # print(f"Total energy: {total_energy} kJ / day\n")
@@ -177,4 +190,6 @@ print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")
 
 print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172:.2f} gal / day\n")
 
-print(f"Total energy: {total_energy:.2e} kJ / day\nTotal cost: ${sum(cost) + total_cost + BUILDING_COSTS:.2f}\n")
+print(f"Waste energy loss: {sum(waste_energy_loss):.2e} kJ / day, waste system cost: ${sum(waste_cost):.2f}")
+
+print(f"Total energy: {total_energy + sum(waste_energy_loss):.2e} kJ / day\nTotal cost: ${sum(cost) + sum(waste_cost) + total_cost + BUILDING_COSTS:.2f}\n")
