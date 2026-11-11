@@ -1,3 +1,33 @@
+# File: __main__.py
+# Date: 11/10/2026
+# By: Danica Libanan
+# dlibanan
+# Savannah Bellamy
+# bellamys
+# Madison Armstrong
+# armst236
+# Braxton Shoults
+# bshoult
+# Section: 3
+# Team: 53
+#
+# ELECTRONIC SIGNATURE
+# Danica Libanan
+# Savannah Bellamy
+# Madison Armstrong
+# Braxton Shoults
+#
+# The electronic signatures above indicate that the program
+# submitted for evaluation is the combined effort of all
+# team members and that each member of the team was an
+# equal participant in its creation. In addition, each
+# member of the team has a general understanding of
+# all aspects of the program development and execution.
+#
+# This module contains functions to calculate fluid density, flow rate, and
+# fluid masses of the ethanol mixture as it travels through the processes.
+#
+
 import math
 import random
 
