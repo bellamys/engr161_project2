@@ -185,9 +185,15 @@ print(f"Total energy loss: {sum(main_energy_loss) + pump_loss:.2e}\n")
 total_energy = pump_in + 3600 * (part_data['fermenter'][FERMENTER]['energy'] + part_data['distiller'][DISTILLER]['energy'] + 2 * part_data['material_removal'][REMOVAL_UNITS]['energy'])
 # print(f"Total energy: {total_energy} kJ / day\n")
 
-print(f"Percent ethanol: {mass_calcs.percEthanol(mass_flows[4]):.1%}\n")
+percEthanol = mass_calcs.percEthanol(mass_flows[4])
+volFlowRate = flow_rate[4] * TIME * 264.172
+outputEnergy = percEthanol * (volFlowRate / 264.172) * (21160.18 * 1000)
 
-print(f"Volumetric flow in gallons per day: {flow_rate[4] * TIME * 264.172:.2f} gal / day\n")
+print(f"Percent ethanol: {percEthanol:.1%}\n")
+
+print(f"Volumetric flow in gallons per day: {volFlowRate:.2f} gal / day\n")
+
+print (f"Energy output: {outputEnergy:.2e} kJ / day\n")
 
 print(f"Waste energy loss: {sum(waste_energy_loss):.2e} kJ / day, waste system cost: ${sum(waste_cost):.2f}")
 
